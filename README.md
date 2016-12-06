@@ -28,20 +28,24 @@ Project came up as a tool to detect repetitive words in speeches and essays.
 
 #Arguments:
 The program takes one positional argument.
+
 If -f is specified, the positional argument is the path to a file
+
 If -f is not specified, the positional argument is the text to be analysed.
 
 ##Optional arguments:
--h --help: shows help text
--f --filename: input is a path to a file rather than the text to be analysed
--V --version: prints version number
+```-h --help: shows help text
+-v --verbose: makes program verbose (currently this doesn't do a lot, just prints out 'done' when program is finished).
+-f --filename: input is a path to a file rather than the text to be analysed.
+-V --version: prints version number.
 -n --number: display the number of words of the following argument. The default is 10 words.
             Write -n 0 to show all words.
 -u --uncommon-words: remove the most common words in the English language from the output.
-		Specify a number to specify the number of words to be removed
--c --compare Use this flag to enable comparasion with most common words
--p --phrases Use this flag to analyse phrases. Use a numeric argument to specify the minimum number of words in a phrase, otherwise the defailt is 2.
+		Specify a number to specify the number of words to be removed.
+-c --compare: Use this flag to enable comparasion with most common words
+-p --phrases: Use this flag to analyse phrases. Use a numeric argument to specify the minimum number of words in a phrase, otherwise the defailt is 2.
 -H --histogram: displays a histogram to visualise the distribution of words.
+```
 
 #License:
  ```
