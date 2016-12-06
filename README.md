@@ -2,6 +2,7 @@ This project is a program designed to count the frequency of words in a text fil
 
 #Example:
 Using an input file containing the GNU GPL:
+
 Input: `-Hf ~/gnu_gpl3.txt`
 
 Output:
