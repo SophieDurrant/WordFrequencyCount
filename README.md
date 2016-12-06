@@ -54,7 +54,7 @@ If -f is not specified, the positional argument is the text to be analysed.
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ```
  
- #Potential improvements:
+#Potential improvements:
  1. The ability to display most common phrases (groups of two or more words) as well as words.
  2. Grab a list of most common words from a file on the Web (eg https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt) 
  and allow the user to specify the number of words to remove
