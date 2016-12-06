@@ -188,7 +188,7 @@ def main(argv=None): # IGNORE:C0111
     '''Command line options.'''
     
     false_default = -1
-    url = "http://norvig.com/ngrams/count_1w100k.txt"
+    url = "https://raw.githubusercontent.com/SophieDurrant/WordFrequencyCount/master/count_1w100k.txt"
 
     if argv is None:
         argv = sys.argv
