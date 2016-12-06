@@ -37,7 +37,9 @@ If -f is not specified, the positional argument is the text to be analysed.
 -V --version: prints version number
 -n --number: display the number of words of the following argument. The default is 10 words.
             Write -n 0 to show all words.
--u --uncommon-words: remove the most common words in the English language from the output
+-u --uncommon-words: remove the most common words in the English language from the output.
+		Specify a number to specify the number of words to be removed
+-c --compare Use this flag to enable comparasion with most common words
 -H --histogram: displays a histogram to visualise the distribution of words.
 
 #License:
@@ -61,3 +63,6 @@ If -f is not specified, the positional argument is the text to be analysed.
  2. Grab a list of most common words from a file on the Web (eg https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt) 
  and allow the user to specify the number of words to remove
  3. Improve histogram readibility
+ 
+ #Other Notices:
+ The file count_1w100k.txt was put together by Peter Norvig from http://norvig.com/ngrams/ .
