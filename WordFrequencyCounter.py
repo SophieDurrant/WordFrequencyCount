@@ -40,7 +40,7 @@ from math import log10
 from math import floor
 
 __all__ = []
-__version__ = 0.1
+__version__ = 0.2
 __date__ = '2016-12-06'
 __updated__ = '2016-12-06'
 
