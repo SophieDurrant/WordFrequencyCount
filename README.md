@@ -40,6 +40,7 @@ If -f is not specified, the positional argument is the text to be analysed.
 -u --uncommon-words: remove the most common words in the English language from the output.
 		Specify a number to specify the number of words to be removed
 -c --compare Use this flag to enable comparasion with most common words
+-p --phrases Use this flag to analyse phrases. Use a numeric argument to specify the minimum number of words in a phrase, otherwise the defailt is 2.
 -H --histogram: displays a histogram to visualise the distribution of words.
 
 #License:
@@ -57,12 +58,7 @@ If -f is not specified, the positional argument is the text to be analysed.
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ```
+
  
-#Potential improvements:
- 1. The ability to display most common phrases (groups of two or more words) as well as words.
- 2. Grab a list of most common words from a file on the Web (eg https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt) 
- and allow the user to specify the number of words to remove
- 3. Improve histogram readibility
- 
- #Other Notices:
- The file count_1w100k.txt was obtained from Peter Norvig's site at http://norvig.com/ngrams/ .
+##Other Notices:
+The file count_1w100k.txt was obtained from Peter Norvig's site at http://norvig.com/ngrams/ .
