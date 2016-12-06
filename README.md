@@ -65,4 +65,4 @@ If -f is not specified, the positional argument is the text to be analysed.
  3. Improve histogram readibility
  
  #Other Notices:
- The file count_1w100k.txt was put together by Peter Norvig from http://norvig.com/ngrams/ .
+ The file count_1w100k.txt was obtained from Peter Norvig's site at http://norvig.com/ngrams/ .
