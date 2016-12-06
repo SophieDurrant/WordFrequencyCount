@@ -2,7 +2,9 @@ This project is a program designed to count the frequency of words in a text fil
 
 #Example:
 Using an input file containing the GNU GPL:
+
 Input: `-Hf ~/gnu_gpl3.txt`
+
 Output:
 ```
 the:      |||||||||||||||||||||||||||||||||| 345
@@ -21,7 +23,7 @@ that:     ||||||||| 91
 Project came up as a tool to detect repetitive words in speeches and essays.
 
 #Installation:
-1. Download .py file (file is a standalone .py file)
+1. Download WordFrequencyCounter.py file (file is a standalone .py file)
 2. Run python3 /path/to/file arguments
 
 #Arguments:
