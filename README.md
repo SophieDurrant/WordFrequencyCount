@@ -52,7 +52,7 @@ If -f is not specified, the positional argument is the text to be analysed.
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    ```
+```
  
  #Potential improvements:
  1. The ability to display most common phrases (groups of two or more words) as well as words.
