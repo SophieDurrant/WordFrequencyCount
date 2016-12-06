@@ -196,6 +196,7 @@ def main(argv=None): # IGNORE:C0111
         wordCounter =   countWords(createWordList(text))
         if remove_common_words:
             #TODO get word list from file (eg https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt)
+            #current word list is inspired by the wikipedia article https://en.wikipedia.org/wiki/Most_common_words_in_English
             #and include user option with -u to specify a number of words to remove.
             # eg -u 100 removes most common 100 words.
             common_words = ["the", "be", "am", "are", "is", "were", "was", "to", "of", "and", "a", "in", "that", "have", "has", "had", "I"]
