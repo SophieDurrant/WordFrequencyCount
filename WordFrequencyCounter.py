@@ -56,9 +56,9 @@ class CLIError(Exception):
     def __unicode__(self):
         return self.msg
     
-def addToWordlist(word, wordlist):
+def addToWordlist(word, wordlist, semi_word_characters):
     """Strips any trailing hyphens or apostrophies and adds result to word list"""
-    while len(word) > 0 and (word[-1] == "'" or word[-1] == '-'):
+    while len(word) > 0 and (word[-1] in semi_word_characters):
         word = word[:-1]
     if word != "":
         wordlist.append(word)
@@ -72,18 +72,19 @@ def createWordList(text: str):
     3. end with a letter
     
     words are automatically converted to lowercase"""
+    semi_word_characters = ["'", '-', '’']
     wordlist = []
     word = ""
     for char in text:
-        if ord(char.upper()) >= ord('A') and ord(char.upper()) <= ord("Z"):
+        if (ord(char.upper()) >= ord('A') and ord(char.upper()) <= ord("Z")) or (ord(char) >= ord("0") and ord(char) <= ord('9')):
             word = word + char.lower()
-        elif (char == '-' or char == "'") and word != "":
+        elif (char in semi_word_characters) and word != "":
             word = word + char
         else:
-            addToWordlist(word, wordlist)
+            addToWordlist(word, wordlist, semi_word_characters)
             word = ""
     
-    addToWordlist(word, wordlist)
+    addToWordlist(word, wordlist, semi_word_characters)
     
     return wordlist
 
@@ -203,7 +204,7 @@ def main(argv=None): # IGNORE:C0111
         parser.add_argument("-f", "--filename", default='', dest="is_file", action="store_true", help="Counts the words in the specified file [default: %(default)s]")
         parser.add_argument('-V', '--version', action='version', version=program_version_message)
         parser.add_argument('-n', '--number', action='store', default=10, dest='number', help="Number of words to display. Most common words will be shown first. Set -n to 0 to show all words. [default: %(default)s]")
-        parser.add_argument('-u', '--uncommon-words', action='store', nargs = '?', default = false_default, const = 10, dest='remove_common_words', help="""Removes the words which come up frequently in the English language, to illuminate words which are common to the text but not the language in general.
+        parser.add_argument('-u', '--uncommon-words', action='store', nargs = '?', default = false_default, const = 20, dest='remove_common_words', help="""Removes the words which come up frequently in the English language, to illuminate words which are common to the text but not the language in general.
             The user can specify an argument to state the number of words excluded.
             The default argument is 10. If the user inputs 0, all words from the url are excluded.""")
         parser.add_argument('-H', '--histogram', action=('store_true'), dest='is_hist', help="Displays a normalised textual histogram to visualise the frequencies of words")
