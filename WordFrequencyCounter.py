@@ -170,7 +170,7 @@ def main(argv=None): # IGNORE:C0111
         parser.add_argument('-V', '--version', action='version', version=program_version_message)
         parser.add_argument('-n', '--number', action='store', default=10, dest='number', help="Number of words to display. Most common words will be shown first. Set -n to 0 to show all words. [default: %(default)s]")
         parser.add_argument('-u', '--uncommon-words', action='store_true', dest='remove_common_words', help="Removes the words which come up frequently in the English language, to illuminate words which are common to the text but not the language in general")
-        parser.add_argument('-H', '--Histogram', action=('store_true'), dest='is_hist', help="Displays a normalised textual histogram to visualise the frequencies of words")
+        parser.add_argument('-H', '--histogram', action=('store_true'), dest='is_hist', help="Displays a normalised textual histogram to visualise the frequencies of words")
         parser.add_argument("text")
         
         # Process arguments
