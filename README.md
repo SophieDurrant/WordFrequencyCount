@@ -34,7 +34,8 @@ If -f is specified, the positional argument is the path to a file
 If -f is not specified, the positional argument is the text to be analysed.
 
 ##Optional arguments:
-```-h --help: shows help text
+```
+-h --help: shows help text
 -v --verbose: makes program verbose (currently this doesn't do a lot, just prints out 'done' when program is finished).
 -f --filename: input is a path to a file rather than the text to be analysed.
 -V --version: prints version number.
