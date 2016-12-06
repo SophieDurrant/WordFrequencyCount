@@ -30,6 +30,8 @@ This text can be either specified from the command line
 
 import sys
 import os
+import requests
+import mimetypes
 
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
@@ -102,22 +104,52 @@ def getWordListFreqOrder(word_counter: Counter, n: int):
     return word_list
 
 def removeCommonWords(word_count, common_words):
+    """removes the common words, as defined by the list common_words, from the Counter word_count"""
     for word in common_words:
         if word in word_count:
             del word_count[word]
             
-def getMaxWordLength(word_list):
+def getLongestWordLength(word_list):
+    """Gets the length of the longest word"""
     max_word_length = 0
     for word in word_list:
         if len(word[0]) > max_word_length:
             max_word_length = len(word[0])
     return max_word_length
+
+def getCommonWordsListFromUrl(url, count = 0):
+    """Gets a list of common words from a url containing  a text file with them"""
+    #This module features two security checks:
+    #1. The file seems like a plaintext file.
+    #2. The file says it's a plaintext file.
+    #This should help mitigate an attack of a malicious binary url being passed to the program
+    plaintext_mime = "text/plain"
+    common_word_list = []
+    guessed_type = mimetypes.guess_type(url) #This finds the guessed type of the url file
+    if guessed_type[0] == plaintext_mime:
+        r = requests.get(url)
+        content_type = r.headers['content-type'] #this finds the stated type of the url file        
+        content_type = content_type.split(";")
+        if content_type[0] == plaintext_mime:
+            #If both checks pass, then it reads the file line by line
+            if count == 0: #reads all lines from file
+                for line in r.iter_lines():
+                    common_word_list.append(line)
+            else: #reads some lines from file
+                for line in r.iter_lines():
+                    if count > 0:
+                        common_word_list.append(line.decode("utf-8"))
+                        count = count - 1;
+                    else:
+                        break                    
+    return common_word_list
+    
     
 def output(word_list, is_hist):
     """Outputs the list of words"""
     
     normalisation_number = max(floor(log10(word_list[0][1])) - 1, 0)
-    max_word_length = getMaxWordLength(word_list)
+    max_word_length = getLongestWordLength(word_list)
     for item in word_list:
         string = item[0] + ": "
         if is_hist:
@@ -136,6 +168,8 @@ def hist(word_count, normalisation_number):
             
 def main(argv=None): # IGNORE:C0111
     '''Command line options.'''
+    
+    false_default = -1
 
     if argv is None:
         argv = sys.argv
@@ -169,7 +203,9 @@ def main(argv=None): # IGNORE:C0111
         parser.add_argument("-f", "--filename", default='', dest="is_file", action="store_true", help="Counts the words in the specified file [default: %(default)s]")
         parser.add_argument('-V', '--version', action='version', version=program_version_message)
         parser.add_argument('-n', '--number', action='store', default=10, dest='number', help="Number of words to display. Most common words will be shown first. Set -n to 0 to show all words. [default: %(default)s]")
-        parser.add_argument('-u', '--uncommon-words', action='store_true', dest='remove_common_words', help="Removes the words which come up frequently in the English language, to illuminate words which are common to the text but not the language in general")
+        parser.add_argument('-u', '--uncommon-words', action='store', nargs = '?', default = false_default, const = 10, dest='remove_common_words', help="""Removes the words which come up frequently in the English language, to illuminate words which are common to the text but not the language in general.
+            The user can specify an argument to state the number of words excluded.
+            The default argument is 10. If the user inputs 0, all words from the url are excluded.""")
         parser.add_argument('-H', '--histogram', action=('store_true'), dest='is_hist', help="Displays a normalised textual histogram to visualise the frequencies of words")
         parser.add_argument("text")
         
@@ -178,7 +214,7 @@ def main(argv=None): # IGNORE:C0111
 
         is_file = args.is_file
         number_to_show = int(args.number)
-        remove_common_words = args.remove_common_words
+        wordsToRemove = int(args.remove_common_words)
         hist = args.is_hist
 
         if is_file:      
@@ -194,12 +230,12 @@ def main(argv=None): # IGNORE:C0111
             text = args.text
             
         wordCounter =   countWords(createWordList(text))
-        if remove_common_words:
+        if wordsToRemove > false_default:
             #TODO get word list from file (eg https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt)
             #current word list is inspired by the wikipedia article https://en.wikipedia.org/wiki/Most_common_words_in_English
             #and include user option with -u to specify a number of words to remove.
             # eg -u 100 removes most common 100 words.
-            common_words = ["the", "be", "am", "are", "is", "were", "was", "to", "of", "and", "a", "in", "that", "have", "has", "had", "I"]
+            common_words = getCommonWordsListFromUrl("https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt", wordsToRemove)
             removeCommonWords(wordCounter, common_words)
         wordsByFrequency = getWordListFreqOrder(wordCounter, number_to_show)
                                                 
