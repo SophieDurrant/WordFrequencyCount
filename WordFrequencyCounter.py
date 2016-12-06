@@ -64,7 +64,7 @@ def addToWordlist(word, wordlist, semi_word_characters):
         wordlist.append(word)
     
 
-def createWordList(text: str):
+def createWordList(text: str, make_phrase_list = False):
     """Creates a list of words by finding
     strings which:
     1. start with a letter
@@ -73,20 +73,38 @@ def createWordList(text: str):
     
     words are automatically converted to lowercase"""
     semi_word_characters = ["'", '-', '’']
+    phrase_punctuation = [',', '—', ':', ';', '–', '/', '&', '-']
     wordlist = []
     word = ""
     for char in text:
-        if (ord(char.upper()) >= ord('A') and ord(char.upper()) <= ord("Z")) or (ord(char) >= ord("0") and ord(char) <= ord('9')):
+        if (is_letter(char)) or (is_digit(char)):
             word = word + char.lower()
         elif (char in semi_word_characters) and word != "":
             word = word + char
         else:
             addToWordlist(word, wordlist, semi_word_characters)
             word = ""
+        if word == "" and char in phrase_punctuation and make_phrase_list:
+            wordlist.append(char)
     
     addToWordlist(word, wordlist, semi_word_characters)
     
     return wordlist
+
+def get_phrases(word_list, min_words):
+    phrases = []
+    while len(word_list) >= min_words:
+        phrase = ""
+        for i in range(min_words - 1):
+            phrase = phrase + word_list[i] + " "
+        
+        for word in word_list[min_words - 1:]:
+            phrase = phrase + word + " "
+            phrases.append(phrase)
+        word_list = word_list[1:]
+    return phrases
+
+            
 
 def countWords(word_list):
     """Creates a Counter (like a dictionary, but stores the frequency of a key alongside the key)
@@ -118,25 +136,62 @@ def getLongestWordLength(word_list):
             max_word_length = len(word[0])
     return max_word_length
 
-def getCommonWords(r: requests.Response, count = 0, includeFreq = False):
+def getCommonWords(r: requests.Response, count = 0, includeFreq = False, start = 0):
     """Gets a list of common words from a url containing  a text file with them"""   
     common_word_list = []
-    i = count - 1
+    line_no = 0
     for line in r.iter_lines():
-        line = line.decode("utf-8")
-        splitline = line.split("\t")
-        splitline[0] = splitline[0].lower()
-        if len(splitline[0]) > 1 or splitline[0] == "i" or splitline[0] == "a":
-            if includeFreq:
-                common_word_list.append(splitline)
-            else:
-                common_word_list.append(splitline[0])
-                
-        if i > 0:    
-            i = i - 1;
-        elif count > 0:
-            break                  
+        if line_no >= start and line_no < start + count:
+            line = line.decode('utf-8')
+            splitline = line.split("\t")
+            splitline[0] = splitline[0].lower()
+            if len(splitline[0]) > 1 or splitline[0] == "i" or splitline[0] == "a":
+                if includeFreq:
+                    common_word_list.append(splitline)
+                else:
+                    common_word_list.append(splitline[0])
+        line_no = line_no + 1
+        
+        if line_no >= (start + count):
+            break           
     return common_word_list
+
+def getSentences(text):
+    """Gets sentences in a text file."""
+    sentences = []
+    sentence = text[0]
+    for i in range(1, len(text) - 1):
+        prev = text[i - 1]
+        curr = text[i]
+        next = text[i + 1]
+        if end_of_sentence(prev, curr, next):
+            if len(sentence) > 0:
+                sentences.append(sentence)
+                sentence = ""
+        else:
+            sentence = sentence + curr
+        
+    sentence = sentence + text[len(text) - 1]
+    sentences.append(sentence)
+    return sentences
+
+
+    
+        
+        
+def is_digit(char):
+    return ord(char) >= ord("0") and ord(char) <= ord("9")
+
+def is_letter(char):
+    uchar = char.upper()
+    return ord(uchar) >= ord('A') and ord(uchar) <= ord("Z")
+
+def end_of_sentence(prev, curr, next):
+    if curr == '\n' or curr == "!" or curr == '?':
+        return True
+    elif curr == '.' and not(is_digit(prev) and  is_digit(next)):
+        return True
+    else: return False
 
 def getRequest(url):
     #This module features two security checks:
@@ -146,7 +201,7 @@ def getRequest(url):
     plaintext_mime = "text/plain"
     guessed_type = mimetypes.guess_type(url) #This finds the guessed type of the url file
     if guessed_type[0] == plaintext_mime:
-        r = requests.get(url)
+        r = requests.get(url, stream=True)
         content_type = r.headers['content-type'] #this finds the stated type of the url file        
         content_type = content_type.split(";")
         if content_type[0] == plaintext_mime:
@@ -227,6 +282,7 @@ def main(argv=None): # IGNORE:C0111
             The default argument is 10. If the user inputs 0, all words from the url are excluded.""")
         parser.add_argument('-H', '--histogram', action=('store_true'), dest='is_hist', help="Displays a normalised textual histogram to visualise the frequencies of words")
         parser.add_argument('-c', '--compare', action='store_true', dest='compare', help='Displays a list of the most common words in order, so you can compare your text to the English language average.')
+        parser.add_argument('-p', '--phrases', action='store', dest='phrases', nargs = "?", default = 0, const = 2, help='Analyse the text to reveal the most common phrases, with the argument being the minimum number of words in a phrase')
         parser.add_argument("text")
         
         # Process arguments
@@ -237,6 +293,7 @@ def main(argv=None): # IGNORE:C0111
         wordsToRemove = int(args.remove_common_words)
         is_hist = args.is_hist
         compare = args.compare
+        use_phrases = int(args.phrases)
         
         #only get the request if it's going to be used
         if wordsToRemove > false_default or compare:
@@ -277,12 +334,24 @@ def main(argv=None): # IGNORE:C0111
                 common_words = getCommonWords(request, number_of_words + wordsToRemove, True)
                 common_words = common_words[wordsToRemove:]
             else:
-                common_words = getCommonWords(request, number_of_words, True)
+                common_words = getCommonWords(request, number_to_show, True)
                     
             print()
             print("Reference:")
             output(common_words, is_hist, True)
                  
+        if use_phrases > 0:
+            print()
+            print("Phrases")
+            sentences = getSentences(text)
+            commonPhrases = Counter()
+            for sentence in sentences:
+                wordList = createWordList(sentence)
+                phrases = get_phrases(wordList, use_phrases)
+                commonPhrases.update(phrases)
+            most_common_phrases = getWordListFreqOrder(commonPhrases, number_to_show)
+            output(most_common_phrases, is_hist, True)
+                
             
         return 0
     except KeyboardInterrupt:
