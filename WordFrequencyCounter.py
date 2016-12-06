@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/local/bin/python3.5
 # encoding: utf-8
 '''
 WordFrequencyCounter -- Counts the words in a piece of text and displays the list of most common words and
@@ -60,6 +60,7 @@ def addToWordlist(word, wordlist):
         word = word[:-1]
     if word != "":
         wordlist.append(word)
+    
 
 def createWordList(text: str):
     """Creates a list of words by finding
@@ -122,7 +123,7 @@ def output(word_list, is_hist):
         if is_hist:
             string = string + " " * (max_word_length - len(item[0]) + 1) + hist(item[1], normalisation_number)   
             
-        string = string + "\t" + str(item[1])
+        string = string + " " + str(item[1])
         print (string)
 
 def hist(word_count, normalisation_number):
