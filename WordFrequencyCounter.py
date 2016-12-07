@@ -1,8 +1,7 @@
-#!/usr/local/bin/python3.5
+#!/usr/bin/python3.5
 # encoding: utf-8
 '''
-WordFrequencyCounter -- Counts the words in a piece of text and displays the list of most common words and
-their corresponding frequencies
+WordFrequencyCounter -- Counts the words in a piece of text and displays the list of most common words and their corresponding frequencies
 
 WordFrequencyCounter is a short program which counts the words in a piece of text.
 This text can be either specified from the command line
@@ -346,21 +345,7 @@ def main(argv=None): # IGNORE:C0111
     program_build_date = str(__updated__)
     program_version_message = '%%(prog)s %s (%s)' % (program_version, program_build_date)
     program_shortdesc = __import__('__main__').__doc__.split("\n")[1]
-    program_license = '''%s
-
-      This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-''' + str((program_shortdesc, str(__date__)))
+    program_license = 'GNU GPL v3.0\n' + str((program_shortdesc, str(__date__)))
 
     try:
         # Setup argument parser
