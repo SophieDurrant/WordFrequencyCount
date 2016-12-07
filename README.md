@@ -23,8 +23,9 @@ that:     ||||||||| 91
 Project came up as a tool to detect repetitive words in speeches and essays.
 
 #Installation:
-1. Download WordFrequencyCounter.py file (file is a standalone .py file)
-2. Run python3 /path/to/file arguments
+1. Install dependency requests via pip3
+2. Download WordFrequencyCounter.py file
+3. Run python3 /path/to/file arguments
 
 #Arguments:
 The program takes one positional argument.
